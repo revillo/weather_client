@@ -14,6 +14,14 @@ class SearchBar extends React.Component
         }
     }
 
+    renderIcon()
+    {
+        return (<svg className="search-icon" viewBox="0 0 128 128" width="128px" height="128px">
+              <circle cx="40" cy="40" r="35" stroke="black" fill="transparent" stroke-width="6"/>
+              <line x1="70" x2="110" y1="70" y2="110" stroke="black" stroke-width="12"/>
+        </svg>);
+    }
+
     render()
     {
 
@@ -22,9 +30,9 @@ class SearchBar extends React.Component
         {
             const inputLength = this.state.input.length;
 
-            const listItems = this.suggestedCities.map((cityState,i) => {
+            const listItems = this.suggestedCities.map((city,i) => {
                 
-                const displayText = cityState.join(", ");
+                const displayText = city.cty + ", " + city.sid;
                 const boldPart = displayText.substr(0, inputLength);
                 const rest = displayText.substr(inputLength);
 
@@ -39,7 +47,7 @@ class SearchBar extends React.Component
                 return (
                 <li key = {i} className = {className} ref = {this.itemRefs[i]}
                 onClick = {onClick.bind(this)}>
-                    <b>{boldPart}</b>{rest}
+                    <b>{boldPart}</b>{rest} ({city.pop})
                 </li>
                 );
             });
@@ -52,13 +60,15 @@ class SearchBar extends React.Component
 
         return (
         <div className="search-area">
-            <input className="search-bar" type="text" name="location" value={this.state.input}
-                placeholder="Search US Cities"
-                onBlur = {this.handleBlur.bind(this)}
-                onFocus = {this.handleFocus.bind(this)}
-                onChange = {this.handleInput.bind(this)} 
-                onKeyDown = {this.handleKeyDown.bind(this)}/>
-            {Symbols.magnifyingGlass}
+            <div className="search-bar-row">
+                <input className="search-bar" type="text" name="location" value={this.state.input}
+                    placeholder="Search US Cities"
+                    onBlur = {this.handleBlur.bind(this)}
+                    onFocus = {this.handleFocus.bind(this)}
+                    onChange = {this.handleInput.bind(this)} 
+                    onKeyDown = {this.handleKeyDown.bind(this)}/>
+                {this.renderIcon()}
+            </div>
             {suggestionList}
         </div>
         )
@@ -110,7 +120,8 @@ class SearchBar extends React.Component
     submitSuggestion(index)
     {
         index = index || this.state.suggestionIndex;
-        var queryText = this.suggestedCities[index].join(", ");
+        const cityInfo = this.suggestedCities[index];
+        var queryText = [cityInfo.cty, cityInfo.sid].join(", ");
         this.setState({input: queryText, suggestions : null});
         this.props.onSubmit(queryText + ", USA");
     }

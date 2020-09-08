@@ -1,4 +1,4 @@
 export default {
-    degrees: "&#176",
-    magnifyingGlass: "&#128269;"
+    degrees: String.fromCharCode(176),
+    magnifyingGlass: String.fromCharCode(128269)
 }

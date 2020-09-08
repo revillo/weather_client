@@ -22,6 +22,7 @@ span.title
 {
   font-size:3rem;
   color: var(--theme-color);
+  cursor: pointer;
 }
 
 span.subtitle
@@ -42,6 +43,19 @@ span.subtitle
   margin: 1rem;
 }
 
+.search-bar-row
+{
+  display:flex;
+  align-items:center;
+}
+
+.search-icon
+{
+  width: 2rem;
+  height: 2rem;
+  opacity: 50%;
+  margin: 0 1rem;
+}
 
 .search-bar
 {
