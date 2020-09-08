@@ -1,5 +1,5 @@
 import React from 'react';
-import Symbols from '../util/symbols'
+import HTTPRequest from '../util/HTTPRequest'
 
 class SearchBar extends React.Component
 {
@@ -17,8 +17,8 @@ class SearchBar extends React.Component
     renderIcon()
     {
         return (<svg className="search-icon" viewBox="0 0 128 128" width="128px" height="128px">
-              <circle cx="40" cy="40" r="35" stroke="black" fill="transparent" stroke-width="6"/>
-              <line x1="70" x2="110" y1="70" y2="110" stroke="black" stroke-width="12"/>
+              <circle cx="40" cy="40" r="35" stroke="black" fill="transparent" strokeWidth="7"/>
+              <line x1="70" x2="110" y1="70" y2="110" stroke="black" strokeWidth="12"/>
         </svg>);
     }
 
@@ -46,8 +46,8 @@ class SearchBar extends React.Component
 
                 return (
                 <li key = {i} className = {className} ref = {this.itemRefs[i]}
-                onClick = {onClick.bind(this)}>
-                    <b>{boldPart}</b>{rest} ({city.pop})
+                onMouseDown = {onClick.bind(this)}>
+                    <b>{boldPart}</b>{rest}
                 </li>
                 );
             });
@@ -61,7 +61,7 @@ class SearchBar extends React.Component
         return (
         <div className="search-area">
             <div className="search-bar-row">
-                <input className="search-bar" type="text" name="location" value={this.state.input}
+                <input className="search-bar" autoComplete="off" type="text" name="location" value={this.state.input}
                     placeholder="Search US Cities"
                     onBlur = {this.handleBlur.bind(this)}
                     onFocus = {this.handleFocus.bind(this)}
@@ -76,20 +76,19 @@ class SearchBar extends React.Component
 
     handleFocus()
     {
-        this.setState({hasFocus: true});
+        this.setState({hasFocus: true, input:""});
     }
 
     handleBlur()
     {
-        //this.setState({hasFocus: false});
+        this.setState({hasFocus: false});
     }
 
     handleInput(event)
     {
         const input = event.target.value;
-        this.setState({ input : input });
-
-        fetch("http://localhost:4000/match_location?location=" + input)
+        this.setState({ input : input, suggestionIndex:0 });
+        fetch(HTTPRequest.formatGetRequest(`${window.location.hostname}:4000/match_location`, {location:input}))
             .then(body => body.json())
             .then(res => {
 
@@ -99,10 +98,13 @@ class SearchBar extends React.Component
                 });
                 
                 this.setState({suggestions: res, suggestionIndex: 0})
+                this.scrollToSuggestion();
+
             })
             .catch(err => {
                 console.log(err)
             });
+
     }
 
     get suggestedCities()
@@ -114,7 +116,16 @@ class SearchBar extends React.Component
 
     get hasSuggestions()
     {
-        return this.state.suggestions;
+        if (this.state.suggestions == null) {
+            return false;
+        }
+
+        if (this.state.suggestions.cities.length == 0)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     submitSuggestion(index)
@@ -123,7 +134,14 @@ class SearchBar extends React.Component
         const cityInfo = this.suggestedCities[index];
         var queryText = [cityInfo.cty, cityInfo.sid].join(", ");
         this.setState({input: queryText, suggestions : null});
-        this.props.onSubmit(queryText + ", USA");
+        this.props.submitCity(cityInfo);
+    }
+
+    scrollToSuggestion()
+    {
+        this.itemRefs[this.state.suggestionIndex].current.scrollIntoView({
+            behavior : 'smooth'
+        });
     }
 
     handleKeyDown(event)
@@ -133,11 +151,14 @@ class SearchBar extends React.Component
             if (this.hasSuggestions)
             {
               this.submitSuggestion();
+            } else {
+                //todo
             }
+            /*
             else if (this.state.input)
             {
                 this.props.onSubmit(this.state.input);
-            }
+            }*/
         }
 
         if (event.key === 'ArrowDown' && this.state.suggestions)
@@ -145,9 +166,7 @@ class SearchBar extends React.Component
             event.preventDefault();
             let suggestionIndex = Math.min(this.suggestedCities.length - 1, this.state.suggestionIndex + 1);
             this.setState({suggestionIndex : suggestionIndex});
-            this.itemRefs[suggestionIndex].current.scrollIntoView({
-                behavior : 'smooth'
-            });
+            this.scrollToSuggestion();
         }
 
         if (event.key === 'ArrowUp' && this.state.suggestions)
@@ -155,9 +174,7 @@ class SearchBar extends React.Component
             event.preventDefault();
             let suggestionIndex = Math.max(0, this.state.suggestionIndex - 1);
             this.setState({suggestionIndex : suggestionIndex});
-            this.itemRefs[suggestionIndex].current.scrollIntoView({
-                behavior : 'smooth'
-            });
+            this.scrollToSuggestion();
         }
     }
 }

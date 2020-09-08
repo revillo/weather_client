@@ -2,6 +2,7 @@ import React from 'react';
 
 import WeatherResults from './WeatherResults';
 import SearchBar from './SearchBar'
+import HTTPRequest from '../util/HTTPRequest'
 
 class MainPanel extends React.Component
 {
@@ -13,20 +14,42 @@ class MainPanel extends React.Component
         }
     }
 
-    queryLocation(locationText)
+    onResize()
     {
-        fetch("http://localhost:4000/get_weather?location=" + locationText)
-        //fetch("http://localhost:4000/sample_result")
+        this.setState({layout : window.innerHeight > window.innerWidth ? "portrait" : "landscape"});
+    }
+
+    componentDidMount()
+    {
+        this.onResize();
+        this.resizeListener = window.addEventListener('resize', this.onResize.bind(this));
+    }
+
+    componentWillUnmount()
+    {
+        window.removeEventListener(this.resizeListener);
+    }
+
+    queryCity(cityData)
+    {
+
+        console.log(cityData.cty);
+        fetch(HTTPRequest.formatGetRequest(`${window.location.hostname}:4000/one_call`, cityData))
+        //fetch(HTTPRequest.formatGetRequest("http://192.168.10.106:4000/sample_one_call", cityData))
         .then((res) => res.json())
         .then((res) => {
 
+            
             if (res.error) {
-                
+                console.log("error", res.error)
             } else {
                 this.setState({
-                    queryResults : res
+                    queryResults : res.results,
+                    queryString : res.query.cty + ", " + res.query.sid
                 });
             }
+
+            console.log(res);
 
         });
     }
@@ -40,7 +63,7 @@ class MainPanel extends React.Component
         if (this.state.queryResults)
         {
             heroClass += " docked";
-            mainBody = <WeatherResults queryResults={this.state.queryResults}></WeatherResults>
+            mainBody = <WeatherResults layout={this.state.layout} queryResults={this.state.queryResults} cityString={this.state.queryString}></WeatherResults>
         }
 
         return (
@@ -48,7 +71,9 @@ class MainPanel extends React.Component
             <div className={heroClass}>
             <span className="title" onClick={() => window.location.reload(false)}>tmwa.</span>
             <span className="subtitle">Tastefully Minimal Weather App</span>
-            <SearchBar onSubmit = {this.queryLocation.bind(this)}></SearchBar>
+            <SearchBar 
+                submitCity = {this.queryCity.bind(this)}>
+            </SearchBar>
             </div>
             {mainBody}
         </div>)
