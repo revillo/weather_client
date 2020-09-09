@@ -1,10 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
 import MainPanel from './components/MainPanel';
-import MomentTimezone from "moment-timezone"
 
 
-import './App.css';
+import './HeroSearch.css';
+import './WeatherResults.css';
 
 function App() {
 

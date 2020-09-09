@@ -29,47 +29,56 @@ class WeatherResults extends React.Component
     {
         const current = this.results.current;
 
+        if (!current)
+        {
+            return null;
+        }
+
         const currentWeather = current.weather[0];
 
-        //const d = DateTime.dateFromUnix(current.dt, this.results.timezone_offset);
-        //console.log(d);
-
         const momentTime = DateTime.momentFromUnix(current.dt, this.results.timezone);
+
+        const timeAndDate = (
+            <React.Fragment>
+            <h2>{momentTime.format("h:mm A")}</h2>
+            <h4>{momentTime.format("dddd, MMM Do YYYY")}</h4>
+            </React.Fragment>
+        );
+
+        const weatherSummary = (
+            <React.Fragment>
+                <div className="flex-vertical">
+                    <div className="flex-horizontal">
+                        {this.renderIcon(currentWeather)}
+                        {this.renderTemperature(current.temp)}
+                    </div>
+                    <span className="description">{currentWeather.description}</span>
+                </div>
+            </React.Fragment>
+        );
 
         if (this.props.layout == "landscape")
         {
             return (
                 <React.Fragment>
-                <span className="chunk-title">{this.props.cityString}</span>
+                <h2>{this.props.cityString}</h2>
+                <span className="chunk-title">Current Time & Weather</span>
                 <div className = "current-weather flex-horizontal page-chunk">
-                    <div className="flex-vertical">
-                        <div className="flex-horizontal">
-                            {this.renderIcon(currentWeather)}
-                            {this.renderTemperature(current.temp)}
-                        </div>
-                        <span className="description">{currentWeather.description}</span>
-                    </div>
-                    <span className="current-time">{momentTime.format("h:mm A")}</span>
-                    <span className="current-date">{momentTime.format("dddd, MMM Do YYYY")}</span>
+                    {weatherSummary}
+                    {timeAndDate}
                 </div>
                 </React.Fragment>
             )
         } else {
             return (
                 <React.Fragment>
-                <span className="chunk-title">{this.props.cityString}</span>
+                <h2>{this.props.cityString}</h2>
+                <span className="chunk-title">Current Time & Weather</span>
                 <div className = "current-weather flex-horizontal page-chunk">
-                    <div className="flex-vertical">
-                        <div className="flex-horizontal">
-                            {this.renderIcon(currentWeather)}
-                            {this.renderTemperature(current.temp)}
-                        </div>
-                        <span className="description">{currentWeather.description}</span>
-                    </div>
+                    {weatherSummary}
                 </div>
                 <div className = "flex-horizontal page-chunk">
-                    <span className="current-time">{momentTime.format("h:mm A")}</span> 
-                    <span className="current-date">{momentTime.format("dddd, MMM Do YYYY")}</span>
+                    {timeAndDate}
                 </div>
                 </React.Fragment>
             )
@@ -85,6 +94,12 @@ class WeatherResults extends React.Component
     {
 
         const hourlyWeather = this.results.hourly;
+        
+        if (!hourlyWeather)
+        {
+            return null;
+        }
+
         const timezone = this.results.timezone;
 
         const hourDisplays = hourlyWeather.map(hour => {
@@ -117,6 +132,12 @@ class WeatherResults extends React.Component
     renderDaily()
     {
         const dailyWeather = this.results.daily;
+
+        if (!dailyWeather)
+        {
+            return null;
+        }
+
         const timezone = this.results.timezone;
 
         const dayDisplays = dailyWeather.map(day => {
@@ -140,8 +161,6 @@ class WeatherResults extends React.Component
                 </div>
             )
         });
-
-
 
         return (
             <React.Fragment>

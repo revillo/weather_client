@@ -8,12 +8,6 @@ function dateFromUnix(seconds)
     return d;
 }
 
-
-/*formatForTimezone: function(date, timeZone)
-{
-    return date.toLocaleString("en-US", {timeZone: timeZone})
-},*/
-
 function formatHour(hour24)
 {
     var ampm = " AM";
@@ -26,7 +20,7 @@ function formatHour(hour24)
         ampm = " PM";
     }
 
-    if (hourNum == 0)
+    if (hourNum === 0)
     {
         hourNum = 12;
     }
@@ -36,9 +30,13 @@ function formatHour(hour24)
 
 function momentFromUnix(utcSeconds, timezone)
 {
+    if (timezone == undefined)
+    {
+        return moment(dateFromUnix(utcSeconds)); 
+    }
+
     return moment(dateFromUnix(utcSeconds)).tz(timezone);
 }
-
 
 export default
 {

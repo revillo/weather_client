@@ -3,6 +3,7 @@ import React from 'react';
 import WeatherResults from './WeatherResults';
 import SearchBar from './SearchBar'
 import HTTPRequest from '../util/HTTPRequest'
+import LoadingIndicator from './LoadingIndicator'
 
 class MainPanel extends React.Component
 {
@@ -11,6 +12,7 @@ class MainPanel extends React.Component
         super(props);
 
         this.state = {
+            loading: false
         }
     }
 
@@ -30,40 +32,126 @@ class MainPanel extends React.Component
         window.removeEventListener(this.resizeListener);
     }
 
-    queryCity(cityData)
+    get recentSearches()
     {
+        try {
+            var recentString = window.localStorage.getItem("recentSearches");
+            return recentString ? JSON.parse(recentString) : []; 
+        } 
+        catch {
+            return [];
+        }
+    }
 
-        console.log(cityData.cty);
-        fetch(HTTPRequest.formatGetRequest(`${window.location.hostname}:4000/one_call`, cityData))
-        //fetch(HTTPRequest.formatGetRequest("http://192.168.10.106:4000/sample_one_call", cityData))
-        .then((res) => res.json())
+    set recentSearches(searches)
+    {
+        window.localStorage.setItem("recentSearches", JSON.stringify(searches));
+    }
+
+    storeRecentSearch(cityData)
+    {
+        var recentSearches = this.recentSearches.filter(search => {
+            return (search.cty != cityData.cty ||
+            search.sid != cityData.sid);
+        });
+        
+        recentSearches.unshift(cityData);
+
+        this.recentSearches = recentSearches;
+    }
+
+    submitCity(cityData)
+    {
+        this.setState({error: null, queryString: null, queryResults: null, loading: true});
+
+        HTTPRequest.fetchBackend("one_call", cityData)
         .then((res) => {
 
-            
             if (res.error) {
-                console.log("error", res.error)
+
+                this.setState({error: res.error, loading: false});
+            
             } else {
+
+                this.storeRecentSearch(cityData);
+
                 this.setState({
                     queryResults : res.results,
-                    queryString : res.query.cty + ", " + res.query.sid
+                    queryString : res.query.cty + ", " + res.query.sid,
+                    loading: false
                 });
             }
+        });
+    }
 
-            console.log(res);
+    submitUserLocation()
+    {
+        window.navigator.geolocation.getCurrentPosition(position => {
+
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            this.submitCity({
+                lat : lat,
+                lon : lon,
+                cty : lat.toFixed(3),
+                sid : lon.toFixed(3)
+            })
 
         });
     }
- 
+
+    renderRecentSearches()
+    {
+        const recentList = this.recentSearches.map((cityData,index) => {
+            
+            var onClick = () => {
+                this.submitCity(cityData);
+            };
+
+            return (<div key={index} className="button" onClick={onClick}>
+                    {cityData.cty}, {cityData.sid}
+                </div>);
+        });
+
+        return (
+            <div>
+                <div key={-1} className="button" onClick={this.submitUserLocation.bind(this)}>My Location</div>
+                {recentList}
+            </div>
+        );
+    }
+
+    renderResults()
+    {
+        return (<WeatherResults layout={this.state.layout} 
+            queryResults={this.state.queryResults} cityString={this.state.queryString}>
+            </WeatherResults>);
+    }
+
     render()
     {
-
         var mainBody;
         var heroClass = "hero";
 
-        if (this.state.queryResults)
+        if (this.state.error)
+        {
+            mainBody = <div className="page-chunk error"> Error: Information is unavailable for your search. </div>
+        } 
+        else if (this.state.queryResults)
         {
             heroClass += " docked";
-            mainBody = <WeatherResults layout={this.state.layout} queryResults={this.state.queryResults} cityString={this.state.queryString}></WeatherResults>
+            mainBody = this.renderResults();
+        } 
+        else if (this.state.loading)
+        {
+            mainBody = (<div className="flex-vertical">
+                <LoadingIndicator></LoadingIndicator>
+            </div>);
+        }
+        else
+        {
+            mainBody = this.renderRecentSearches();
         }
 
         return (
@@ -72,11 +160,11 @@ class MainPanel extends React.Component
             <span className="title" onClick={() => window.location.reload(false)}>tmwa.</span>
             <span className="subtitle">Tastefully Minimal Weather App</span>
             <SearchBar 
-                submitCity = {this.queryCity.bind(this)}>
+                submitCity = {this.submitCity.bind(this)}>
             </SearchBar>
             </div>
             {mainBody}
-        </div>)
+        </div>);
     }
 }
 

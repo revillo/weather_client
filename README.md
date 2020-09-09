@@ -1,3 +1,30 @@
+# Weather App Client
+
+### Live Demo
+http://45.79.32.172/
+
+### Requirements
+NodeJS + npm
+PM2 (npm install -g pm2@latest)
+
+### Install and Build
+```
+npm install
+npm build
+```
+
+### Deploy in production
+```
+npm run start:pm2
+```
+
+### Test
+```
+npm test
+```
+
+# Create React App Information
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

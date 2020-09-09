@@ -53,14 +53,14 @@ class SearchBar extends React.Component
             });
             
             suggestionList = 
-            <div  className="search-dropdown">
+            <div  className="search-dropdown search-bar-wide">
                 <ul className="suggestions">{listItems}</ul>
             </div>
         }
 
         return (
         <div className="search-area">
-            <div className="search-bar-row">
+            <div className="search-bar-row search-bar-wide">
                 <input className="search-bar" autoComplete="off" type="text" name="location" value={this.state.input}
                     placeholder="Search US Cities"
                     onBlur = {this.handleBlur.bind(this)}
@@ -88,8 +88,8 @@ class SearchBar extends React.Component
     {
         const input = event.target.value;
         this.setState({ input : input, suggestionIndex:0 });
-        fetch(HTTPRequest.formatGetRequest(`${window.location.hostname}:4000/match_location`, {location:input}))
-            .then(body => body.json())
+        //fetch(HTTPRequest.formatGetRequest(`${window.location.hostname}:4000/match_location`, {location:input}))
+        HTTPRequest.fetchBackend("match_location", {location:input})
             .then(res => {
 
                 this.itemRefs = [];
@@ -120,7 +120,7 @@ class SearchBar extends React.Component
             return false;
         }
 
-        if (this.state.suggestions.cities.length == 0)
+        if (this.state.suggestions.cities.length === 0)
         {
             return false;
         }
