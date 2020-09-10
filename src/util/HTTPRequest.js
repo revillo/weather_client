@@ -17,7 +17,7 @@ export default {
     fetchBackend: function(api_name, params)
     {
         //For now just assume front and backend are on the same server
-        return fetch(formatGetRequest(`${window.location.hostname}:4000/${api_name}`, params))
+        return fetch(formatGetRequest(`${window.location.hostname}:2052/${api_name}`, params))
             .then(body => body.json());        
     }
 
