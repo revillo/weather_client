@@ -13,7 +13,7 @@ PM2 (npm install -g pm2@latest)
 ### Install and Build
 ```
 npm install
-npm build
+npm run build
 ```
 
 ### Deploy in production
