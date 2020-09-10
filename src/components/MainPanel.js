@@ -98,6 +98,8 @@ class MainPanel extends React.Component
                 sid : lon.toFixed(3)
             })
 
+        }, err => {
+          alert("Please use the local version to enable this feature.")  
         });
     }
 

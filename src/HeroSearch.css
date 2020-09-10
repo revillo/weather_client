@@ -132,6 +132,7 @@ ul.suggestions {
   animation: rotate 1.5s linear infinite;
   width: 3rem;
   height: 3rem;
+  margin: 2em;
 }
 
 .spinner-circle {

@@ -21,6 +21,8 @@ npm run build
 npm run start:pm2
 ```
 
+The production site runs on port 80, ie http://localhost
+
 ### Test
 ```
 npm test
