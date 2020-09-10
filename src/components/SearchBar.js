@@ -16,46 +16,51 @@ class SearchBar extends React.Component
 
     renderIcon()
     {
-        return (<svg className="search-icon" viewBox="0 0 128 128" width="128px" height="128px">
-              <circle cx="40" cy="40" r="35" stroke="black" fill="transparent" strokeWidth="7"/>
-              <line x1="70" x2="110" y1="70" y2="110" stroke="black" strokeWidth="12"/>
+        return (
+        <svg className="search-icon" viewBox="0 0 128 128" width="128px" height="128px">
+            <circle cx="40" cy="40" r="35" stroke="black" fill="transparent" strokeWidth="7"/>
+            <line x1="70" x2="110" y1="70" y2="110" stroke="black" strokeWidth="12"/>
         </svg>);
+    }
+
+    renderDropdown()
+    {
+        const inputLength = this.state.input.length;
+
+        const listItems = this.suggestedCities.map((city,i) => {
+            
+            const displayText = city.cty + ", " + city.sid;
+            const boldPart = displayText.substr(0, inputLength);
+            const rest = displayText.substr(inputLength);
+
+            var className = "";
+            className += i === this.state.suggestionIndex ? " selected" : "";
+
+            function onClick() {
+                this.submitSuggestion(i);
+            }
+
+            return (
+                <li key = {i} className = {className} ref = {this.itemRefs[i]}
+                    onMouseDown = {onClick.bind(this)}>
+                    <b>{boldPart}</b>{rest}
+                </li>
+            );
+        });
+        
+        return(
+            <div  className="search-dropdown search-bar-wide">
+                <ul className="suggestions">{listItems}</ul>
+            </div>
+        );
     }
 
     render()
     {
-
-        var suggestionList;
+        var suggestionDropdown = null;
         if (this.hasSuggestions && this.state.hasFocus)
         {
-            const inputLength = this.state.input.length;
-
-            const listItems = this.suggestedCities.map((city,i) => {
-                
-                const displayText = city.cty + ", " + city.sid;
-                const boldPart = displayText.substr(0, inputLength);
-                const rest = displayText.substr(inputLength);
-
-                var className = "";
-                className += i === this.state.suggestionIndex ? " selected" : "";
-
-                function onClick()
-                {
-                    this.submitSuggestion(i);
-                }
-
-                return (
-                <li key = {i} className = {className} ref = {this.itemRefs[i]}
-                onMouseDown = {onClick.bind(this)}>
-                    <b>{boldPart}</b>{rest}
-                </li>
-                );
-            });
-            
-            suggestionList = 
-            <div  className="search-dropdown search-bar-wide">
-                <ul className="suggestions">{listItems}</ul>
-            </div>
+            suggestionDropdown = this.renderDropdown();
         }
 
         return (
@@ -69,7 +74,7 @@ class SearchBar extends React.Component
                     onKeyDown = {this.handleKeyDown.bind(this)}/>
                 {this.renderIcon()}
             </div>
-            {suggestionList}
+            {suggestionDropdown}
         </div>
         )
     }
@@ -88,7 +93,6 @@ class SearchBar extends React.Component
     {
         const input = event.target.value;
         this.setState({ input : input, suggestionIndex:0 });
-        //fetch(HTTPRequest.formatGetRequest(`${window.location.hostname}:4000/match_location`, {location:input}))
         HTTPRequest.fetchBackend("match_location", {location:input})
             .then(res => {
 
@@ -139,9 +143,12 @@ class SearchBar extends React.Component
 
     scrollToSuggestion()
     {
-        this.itemRefs[this.state.suggestionIndex].current.scrollIntoView({
-            behavior : 'smooth'
-        });
+        if (this.itemRefs[this.state.suggestionIndex].current)
+        {
+            this.itemRefs[this.state.suggestionIndex].current.scrollIntoView({
+                behavior : 'smooth'
+            });
+        }
     }
 
     handleKeyDown(event)

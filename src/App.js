@@ -8,7 +8,7 @@ import './WeatherResults.css';
 function App() {
 
   return (
-    <MainPanel></MainPanel>
+    <MainPanel/>
   );
 }
 

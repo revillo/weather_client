@@ -5,7 +5,10 @@ http://45.79.32.172/
 
 ### Requirements
 NodeJS + npm
+
 PM2 (npm install -g pm2@latest)
+
+[weather_api](https://github.com/revillo/weather_api)
 
 ### Install and Build
 ```

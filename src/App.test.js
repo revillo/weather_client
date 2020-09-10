@@ -2,6 +2,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import App from './App';
 
-test('Renders Input Bar', () => {
-  expect(1).toBe(1);
+test('App Renders', () => {
+  const { getByText } = render(<App />);
+  const logoText = getByText(/tmwa./i);
+  expect(logoText).toBeInTheDocument();
 });

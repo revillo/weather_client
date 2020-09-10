@@ -120,11 +120,11 @@ class WeatherResults extends React.Component
         return (
             <React.Fragment>
                 <span className="chunk-title">48 Hour Forecast</span>
-            <div className = "hourly-weather page-chunk">
-                <div className = "weather-graph">
-                {hourDisplays}
+                <div className = "hourly-weather page-chunk">
+                    <div className = "weather-graph">
+                        {hourDisplays}
+                    </div>
                 </div>
-            </div>
             </React.Fragment>
         )
     }
@@ -165,11 +165,11 @@ class WeatherResults extends React.Component
         return (
             <React.Fragment>
                 <span className="chunk-title">7 Day Forecast</span>
-            <div className = "daily-weather page-chunk">
-                <div className = "weather-graph">
-                {dayDisplays}
-                </div>
-            </div>
+                <div className = "daily-weather page-chunk">
+                    <div className = "weather-graph">
+                        {dayDisplays}
+                    </div>
+                 </div>
             </React.Fragment>
         )
     }

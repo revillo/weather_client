@@ -29,7 +29,7 @@ class MainPanel extends React.Component
 
     componentWillUnmount()
     {
-        window.removeEventListener(this.resizeListener);
+        window.removeEventListener('resize', this.resizeListener);
     }
 
     get recentSearches()
@@ -124,9 +124,10 @@ class MainPanel extends React.Component
 
     renderResults()
     {
-        return (<WeatherResults layout={this.state.layout} 
-            queryResults={this.state.queryResults} cityString={this.state.queryString}>
-            </WeatherResults>);
+        return (
+        <WeatherResults layout={this.state.layout} 
+            queryResults={this.state.queryResults} cityString={this.state.queryString}/>
+        );
     }
 
     render()
@@ -145,8 +146,9 @@ class MainPanel extends React.Component
         } 
         else if (this.state.loading)
         {
-            mainBody = (<div className="flex-vertical">
-                <LoadingIndicator></LoadingIndicator>
+            mainBody = (
+            <div className="flex-vertical">
+                <LoadingIndicator/>
             </div>);
         }
         else
@@ -157,11 +159,9 @@ class MainPanel extends React.Component
         return (
         <div className = "main-panel">
             <div className={heroClass}>
-            <span className="title" onClick={() => window.location.reload(false)}>tmwa.</span>
-            <span className="subtitle">Tastefully Minimal Weather App</span>
-            <SearchBar 
-                submitCity = {this.submitCity.bind(this)}>
-            </SearchBar>
+                <span className="title" onClick={() => window.location.reload(false)}>tmwa.</span>
+                <span className="subtitle">Tastefully Minimal Weather App</span>
+                <SearchBar submitCity = {this.submitCity.bind(this)}/>
             </div>
             {mainBody}
         </div>);
