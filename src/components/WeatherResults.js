@@ -114,6 +114,7 @@ class WeatherResults extends React.Component
 
             return (
                 <div key={hour.dt} className="hour-display flex-vertical">
+                    <span>{date.format("ddd")}</span>
                     <b>{DateTime.formatHour(date.hours())}</b>
                     {this.renderTemperature(hour.temp)}
                     {this.renderIcon(hourWeather)}
