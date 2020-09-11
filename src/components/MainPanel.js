@@ -55,6 +55,10 @@ class MainPanel extends React.Component
             search.sid != cityData.sid);
         });
         
+        //Truncate if too many in history
+        recentSearches = recentSearches.slice(0, 50);
+
+        //Prepend latest search
         recentSearches.unshift(cityData);
 
         this.recentSearches = recentSearches;
