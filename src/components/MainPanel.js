@@ -148,8 +148,9 @@ class MainPanel extends React.Component
         } 
         else if (this.state.loading)
         {
+            heroClass += " docked";
             mainBody = (
-            <div className="flex-vertical">
+            <div className="weather-results flex-vertical">
                 <LoadingIndicator/>
             </div>);
         }

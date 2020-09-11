@@ -41,7 +41,7 @@ class WeatherResults extends React.Component
         const timeAndDate = (
             <React.Fragment>
             <h2>{momentTime.format("h:mm A")}</h2>
-            <h4>{momentTime.format("dddd, MMM Do YYYY")}</h4>
+            <h4>{momentTime.format("dddd")} <br/> {momentTime.format("MMM Do YYYY")}</h4>
             </React.Fragment>
         );
 
@@ -109,7 +109,7 @@ class WeatherResults extends React.Component
             const hourWeather = hour.weather[0];
 
             return (
-                <div key={hour.dt} className="hour-display">
+                <div key={hour.dt} className="hour-display flex-vertical">
                     <b>{DateTime.formatHour(date.hours())}</b>
                     {this.renderTemperature(hour.temp)}
                     {this.renderIcon(hourWeather)}
@@ -129,7 +129,7 @@ class WeatherResults extends React.Component
         )
     }
 
-    renderDaily()
+    renderDailyPortrait()
     {
         const dailyWeather = this.results.daily;
 
@@ -147,8 +147,48 @@ class WeatherResults extends React.Component
             const dayWeather = day.weather[0];
 
             return (
-                <div key={day.dt} className="hour-display flex-vertical">
-                    <b><span>{date.format("ddd")}</span></b>
+                
+                <React.Fragment>
+                <div><b>{date.format(this.props.layout === "portrait" ? "dddd" : "ddd")}</b></div>
+                <div><span className="tiny-text">hi</span>{this.renderTemperature(day.temp.max)}</div>
+                <div><span className="tiny-text">lo</span>{this.renderTemperature(day.temp.min)}</div>
+                <div>{this.renderIcon(dayWeather)}</div>
+                </React.Fragment>
+            );
+        });
+
+        return (
+            <React.Fragment>
+                <span className="chunk-title">7 Day Forecast</span>
+                <div className = "daily-weather page-chunk">
+                    <div className = "weather-grid">
+                        {dayDisplays}
+                    </div>
+                 </div>
+            </React.Fragment>
+        )
+    }
+
+    renderDailyLandscape()
+    {
+        const dailyWeather = this.results.daily;
+
+        if (!dailyWeather)
+        {
+            return null;
+        }
+
+        const timezone = this.results.timezone;
+
+        const dayDisplays = dailyWeather.map(day => {
+
+            const date = DateTime.momentFromUnix(day.dt, timezone);
+
+            const dayWeather = day.weather[0];
+
+            return (
+                <div key={day.dt} className="flex-vertical hour-display">
+                    <b><span>{date.format(this.props.layout === "portrait" ? "dddd" : "ddd")}</span></b>
                     <span>
                         <span className="tiny-text">hi</span>
                         {this.renderTemperature(day.temp.max)}
@@ -166,7 +206,7 @@ class WeatherResults extends React.Component
             <React.Fragment>
                 <span className="chunk-title">7 Day Forecast</span>
                 <div className = "daily-weather page-chunk">
-                    <div className = "weather-graph">
+                    <div className = "flex-horizontal weather-graph">
                         {dayDisplays}
                     </div>
                  </div>
@@ -177,10 +217,10 @@ class WeatherResults extends React.Component
     render()
     {
         return(
-        <div className = "weather-results">
+        <div className = {"weather-results " + this.props.layout}>
             {this.renderCurrent()}
             {this.renderHourly()}
-            {this.renderDaily()}
+            {this.props.layout === "portrait" ? this.renderDailyPortrait() : this.renderDailyLandscape()}
         </div>
         );
     }
