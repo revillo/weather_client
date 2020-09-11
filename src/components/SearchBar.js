@@ -159,7 +159,7 @@ class SearchBar extends React.Component
             {
               this.submitSuggestion();
             } else {
-                //todo
+                //TODO - possibly display error when submitting without a matching city
             }
             /*
             else if (this.state.input)

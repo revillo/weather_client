@@ -4,7 +4,7 @@ import SearchBar from '../components/SearchBar'
 
 describe ("SearchBar", () => {
 
-    it("Renders Without Crashing", () => {
+    it("Renders without crashing", () => {
 
         function submitCity()
         {}
@@ -15,7 +15,7 @@ describe ("SearchBar", () => {
 
     })
 
-    it("Displays Matching Cities and can submit query", async (done) => {
+    it("Displays matching cities and can submit query", async (done) => {
 
         function submitCity(cityData)
         {
@@ -36,7 +36,7 @@ describe ("SearchBar", () => {
         const { getByText,  getByPlaceholderText } = render(<SearchBar submitCity={submitCity} />);
         const input = getByPlaceholderText("Search US Cities");  
 
-        //Wait a moment for search bar to display results
+        //Wait a second for search bar to display results
         setTimeout(() => {
 
             expect(getByText("tlanta, GA")).toBeInTheDocument()
