@@ -117,7 +117,7 @@ class MainPanel extends React.Component
         });
 
         return (
-            <div>
+            <div className="recent-searches">
                 <div key={-1} className="button" onClick={this.submitUserLocation.bind(this)}>My Location</div>
                 {recentList}
             </div>

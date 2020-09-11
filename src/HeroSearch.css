@@ -144,6 +144,10 @@ ul.suggestions {
   stroke-width: 8px;
 }
 
+.recent-searches {
+  text-align: center;
+}
+
 @keyframes rotate {
   from {
     transform: rotate(0);
