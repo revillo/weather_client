@@ -41,7 +41,11 @@ class WeatherResults extends React.Component
         const timeAndDate = (
             <React.Fragment>
             <h2>{momentTime.format("h:mm A")}</h2>
-            <h4>{momentTime.format("dddd")} <br/> {momentTime.format("MMM Do YYYY")}</h4>
+            <h4>
+                <span>{momentTime.format("dddd")}</span>
+                <br/>
+                <span>{momentTime.format("MMM Do YYYY")}</span>
+            </h4>
             </React.Fragment>
         );
 

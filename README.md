@@ -4,7 +4,7 @@
 http://45.79.32.172/
 
 ### Requirements
-NodeJS + npm
+NodeJS (v12), NPM
 
 PM2 (npm install -g pm2@latest)
 

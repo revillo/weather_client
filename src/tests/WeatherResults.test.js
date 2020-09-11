@@ -28,7 +28,8 @@ describe('Weather Results', () => {
         textExists("Current Time & Weather");
         textExists("broken clouds");
         textExists("9:26 AM");
-        textExists("Thursday, Sep 10th 2020");
+        textExists("Thursday");
+        textExists("Sep 10th 2020");
         textExists("48 Hour Forecast");
         textExists("7 Day Forecast");
 
